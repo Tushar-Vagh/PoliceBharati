@@ -26,7 +26,7 @@ const UploadPage = () => {
     formData.append("File", file);
 
     const response = await fetch(
-      "http://localhost:5000/api/master/bulk-upload",
+      "/api/master/bulk-upload",
       {
         method: "POST",
         body: formData,

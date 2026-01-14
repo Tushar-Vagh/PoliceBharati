@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import "../styles/Registration.css";
 
-const API_BASE = "http://localhost:5000/api/Master";
+const API_BASE = "/api/Master";
 
 /* ================= HELPERS ================= */
 const yesNo = (v) =>

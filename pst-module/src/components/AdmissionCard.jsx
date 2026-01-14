@@ -10,7 +10,7 @@ const AdmissionCard = forwardRef(({ candidate }, ref) => {
         const fetchMaster = async () => {
             try {
                 const res = await fetch(
-                    `http://localhost:5000/api/Master/by-application/${candidate.application_number}`
+                    `/api/Master/by-application/${candidate.application_number}`
                 );
                 if (!res.ok) return;
                 const data = await res.json();
