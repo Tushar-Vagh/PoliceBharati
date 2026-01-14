@@ -2,6 +2,8 @@
 import PstCandidateList from "./pages/PstCandidateList";
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+
 
 // Components
 import Navbar from "./components/Navbar";
@@ -21,7 +23,17 @@ import EventPage from "./pages/EventPage";
 // import ReportsPage from "./pages/ReportsPage"; 
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+const [isAuthenticated, setIsAuthenticated] = useState(
+  () => !!localStorage.getItem("user")
+);
+
+
+useEffect(() => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    setIsAuthenticated(true);
+  }
+}, []);
 
   return (
     <div className="app-container">

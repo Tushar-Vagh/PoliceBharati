@@ -9,12 +9,19 @@ const Navbar = ({ setIsAuthenticated }) => { // 1. Receive setter prop
   const showBackButton = location.pathname !== "/";
   
   const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?");
-    if (confirmLogout) {
-      setIsAuthenticated(false); // 2. Clear auth state
-      navigate("/login"); // 3. Redirect to login
-    }
-  };
+  const confirmLogout = window.confirm("Are you sure you want to logout?");
+  if (confirmLogout) {
+    // ✅ Remove stored login data
+    localStorage.removeItem("user");
+
+    // ✅ Clear auth state
+    setIsAuthenticated(false);
+
+    // ✅ Redirect to login
+    navigate("/login", { replace: true });
+  }
+};
+
 
   return (
     <nav className="navbar no-print">

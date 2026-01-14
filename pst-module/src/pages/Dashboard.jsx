@@ -68,7 +68,7 @@ import '../styles/dashboard.css';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const user = JSON.parse(sessionStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("user"));
 
     // ✅ Step 1: handle missing user
     if (!user) {

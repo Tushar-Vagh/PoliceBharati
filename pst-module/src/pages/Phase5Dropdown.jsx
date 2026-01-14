@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/Phase5Menu.css";
+import "../styles//Phase5Menu.css";
 
 /* ---------- Reusable Dropdown ---------- */
 function Dropdown({ title, items, onItemClick }) {
@@ -40,87 +40,87 @@ function Dropdown({ title, items, onItemClick }) {
 export default function Phase5Dropdown() {
 
   /* ===== EXISTING LOGIC – EXTENDED (NOT BROKEN) ===== */
-  const downloadExcel = async (type) => {
-    try {
-      let url = "";
-      let fileName = "";
+ const downloadExcel = async (type) => {
+  try {
+    let url = "";
+    let fileName = "";
 
-      if (type === "passed") {
-        url = "http://localhost:5173/api/reports/passed-candidates";
-        fileName = "All_Passed_Candidates.xlsx";
-      } 
-      else if (type === "failed") {
-        url = "http://localhost:5173/api/reports/failed-candidates";
-        fileName = "All_Failed_Candidates.xlsx";
-      } 
-      else if (type === "total-registration") {
-        url = "http://localhost:5173/api/reports/total-registration";
-        fileName = "Total_Registration.xlsx";
-      } 
+    if (type === "passed") {
+      url = "/api/reports/passed-candidates";
+      fileName = "All_Passed_Candidates.xlsx";
 
-      else if (type === "selected") {
-  url = "http://localhost:5173/api/reports/selected-candidates";
-  fileName = "Selected_Candidates_List.xlsx";
-}
+    } else if (type === "failed") {
+      url = "/api/reports/failed-candidates";
+      fileName = "All_Failed_Candidates.xlsx";
 
-else if (type === "rejected") {
-  url = "http://localhost:5173/api/reports/rejected-candidates";
-}
+    } else if (type === "total-registration") {
+      url = "/api/reports/total-registration";
+      fileName = "Total_Registration.xlsx";
 
-else if (type === "verified") {
-  url = "http://localhost:5173/api/reports/verified-candidates";
-}
+    } else if (type === "selected") {
+      url = "/api/reports/selected-candidates";
+      fileName = "Selected_Candidates_List.xlsx";
 
-else if (type === "unverified") {
-  url = "http://localhost:5173/api/reports/unverified-candidates";
-}
+    } else if (type === "rejected") {
+      url = "/api/reports/rejected-candidates";
+      fileName = "Rejected_Candidates_List.xlsx";
 
-else if (type === "pet-event-wise") {
-  url = "http://localhost:5173/api/reports/pet-event-wise-report";
-}
+    } else if (type === "verified") {
+      url = "/api/reports/verified-candidates";
+      fileName = "Verified_Candidates_List.xlsx";
 
-else if (type === "PET_Final_Constable") {
-  url = "http://localhost:5173/api/reports/pet-final-constable";
-}
+    } else if (type === "unverified") {
+      url = "/api/reports/unverified-candidates";
+      fileName = "Unverified_Candidates_List.xlsx";
 
-else if (type === "petfinal--driver") {
-  url = "http://localhost:5173/api/reports/pet-final-driver";
+    } else if (type === "pet-event-wise") {
+      url = "/api/reports/pet-event-wise-report";
+      fileName = "PET_Event_Wise_Report.xlsx";
 
-}
+    } else if (type === "PET_Final_Constable") {
+      url = "/api/reports/pet-final-constable";
+      fileName = "PET_Final_Constable.xlsx";
 
+    } else if (type === "pet-final-driver") {
+      url = "/api/reports/pet-final-driver";
+      fileName = "PET_Final_Driver.xlsx";
 
-      else {
-        alert(`Clicked: ${type}`);
-        return;
-      }
-      
+    } else if (type === "audit-report") {
+      url = "/api/reports/audit-report";
+      fileName = "Audit_Report.xlsx";
 
-      const response = await fetch(url);
-
-// ===== EMPTY EXCEL VALIDATION =====
-if (response.status === 404) {
-  const message = await response.text();
-  alert(message);
-  return;
-}
-
-if (!response.ok) throw new Error("Download failed");
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = fileName;
-
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      alert("Error downloading Excel");
-      console.error(error);
+    } else {
+      alert(`Clicked: ${type}`);
+      return;
     }
-  };
+
+    const response = await fetch(url);
+
+    // ===== EMPTY EXCEL VALIDATION =====
+    if (response.status === 404) {
+      const message = await response.text();
+      alert(message);
+      return;
+    }
+
+    if (!response.ok) throw new Error("Download failed");
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = fileName;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    alert("Error downloading Excel");
+    console.error(error);
+  }
+};
+
 
   /* ===== CLICK HANDLER ===== */
   const handleClick = (item) => {
@@ -142,30 +142,34 @@ if (!response.ok) throw new Error("Download failed");
         break;
 
       case "Rejected Candidates List":
-  downloadExcel("rejected");
-  break;
+        downloadExcel("rejected");
+        break;
 
-  case "Verified Candidates List":
-  downloadExcel("verified");
-  break;
+      case "Verified Candidates List":
+        downloadExcel("verified");
+        break;
 
-  case "Unverified Candidates List":
-  downloadExcel("unverified");
-  break;
+      case "Unverified Candidates List":
+        downloadExcel("unverified");
+        break;
 
       case "PET Event Wise Report":
-  downloadExcel("pet-event-wise");
-  break;
+        downloadExcel("pet-event-wise");
+        break;
 
-  case "Constable":
-      downloadExcel("PET_Final_Constable");
-      break;
+      case "Constable":
+        downloadExcel("PET_Final_Constable");
+        break;
 
       case "Driver":
-  downloadExcel("petfinal--driver");
+        downloadExcel("pet-final-driver");
+        break;
+
+      case "Audit Report":
+  downloadExcel("audit-report");
   break;
 
-
+      
       default:
         alert(`Clicked: ${item}`);
     }
@@ -175,33 +179,31 @@ if (!response.ok) throw new Error("Download failed");
   const recordFetchItems = [
     "Total Registration",
     "Selected Candidates List",
-    "Rejected Candidates List"
+    "Rejected Candidates List",
   ];
 
   const biometricItems = [
     "Verified Candidates List",
-    "Unverified Candidates List"
+    "Unverified Candidates List",
   ];
 
-  const petReportItems = [
-    "PET Event Wise Report"
-  ];
+  const petReportItems = ["PET Event Wise Report"];
 
   const petFinalStatusItems = [
     "All Passed Candidates",
     "All Failed Candidates",
     "Constable",
-    "Driver"
+    "Driver",
   ];
 
   const administrativeItems = [
     // "Administrative Report",
-    "Audit Report"
+    "Audit Report",
   ];
 
   const finalMeritItems = [
-    "Final Merit Report",
-    "Overall Rank / Final Selection"
+    //"Final Merit Report",
+    "Overall Rank / Final Selection",
   ];
 
   return (
