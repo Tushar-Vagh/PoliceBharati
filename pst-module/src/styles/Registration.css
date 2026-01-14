@@ -1,0 +1,384 @@
+/* ==================================================
+   GLOBAL BASE
+================================================== */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7fb;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-size: 25.5px; /* bigger & readable */
+  color: #1f2937;
+}
+
+
+/* ==================================================
+   MAIN PAGE CONTAINER
+================================================== */
+.registration-form {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 26px 30px;
+}
+
+/* ==================================================
+   FORM CARD (like verification module)
+================================================== */
+.registration-form form {
+  background: #ffffff;
+  border: 1px solid #dbe3ec;
+  border-radius: 6px;
+  padding: 26px 32px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* ==================================================
+   MAIN TITLES
+================================================== */
+.registration-form h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #0b5ed7;
+  margin-bottom: 20px;
+}
+
+.registration-form h2 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #0b5ed7;
+  margin: 28px 0 18px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e3e9f1;
+}
+
+/* ==================================================
+   FORM GRID
+================================================== */
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+/* ==================================================
+   INPUTS / SELECTS
+================================================== */
+.field input,
+.field select {
+  height: 40px;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: 1px solid #c9d3df;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: #0b5ed7;
+}
+
+/* ==================================================
+   READ-ONLY / VERIFIED LOOK
+================================================== */
+.field input:disabled,
+.field select:disabled {
+  background-color: #f7f9fc;
+  color: #000;
+  border-color: #d6dde7;
+  cursor: not-allowed;
+}
+
+/* ==================================================
+   ACTION BUTTONS
+================================================== */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #e5ebf3;
+  gap: 12px;
+}
+
+.actions button {
+  min-width: 110px;
+  padding: 10px 22px;
+  font-size: 15.5px;
+  border-radius: 6px;
+  cursor:pointer;
+}
+
+.actions button:first-child {
+  margin-right: auto; /* Back stays left, Next goes right */
+}
+
+
+.actions button:last-child {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* .actions button:first-child:hover {
+  background-color: #bb2d3b;
+}  */
+
+/* Primary */
+
+ .btn-reject
+ .actions button[type="button"]{
+  background-color: #5d2020;
+  color: #fff;
+  border: none;
+}
+
+.btn-reject:hover {
+  background-color: #bb2d3b;
+}
+/* =========================
+   REJECT BUTTON (RED)
+========================= */
+.rej-primary,
+.actions button[type="button"]{
+   background-color: #5d3a20;
+  color: #fff;
+  border: none;
+}
+
+.btn-primary,
+.actions button[type="button"],
+.actions button[type="submit"] {
+  background-color: #2b5d20;
+  color: #fff;
+  border: none;
+}
+
+.actions button:hover {
+  opacity: 0.95;
+}
+
+.btn-primary:hover:not(:disabled) { 
+  background-color: #6c757d;  
+}
+
+/* Secondary */
+.actions button:not(.btn-primary) {
+  background-color: #2b5d20;
+  color: #ffffff;
+}
+
+.actions button:not(.btn-primary):hover:not(:disabled) {
+  background-color: #565e64;
+}
+
+/* Disabled */
+.actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==================================================
+   APPLICATION NUMBER PAGE (INPUT BOX STYLE)
+================================================== */
+/* ==================================================
+   APPLICATION NUMBER PAGE – FONT SIZE ENHANCEMENT
+================================================== */
+
+/* Card title */
+.registration-form form:first-child h1 {
+  font-size: 26px; /* ⬆️ bigger heading */
+  font-weight: 600;
+}
+
+/* Label */
+.registration-form form:first-child .field label {
+  font-size: 20px; /* ⬆️ */
+  font-weight: 500;
+}
+
+/* Input box */
+.registration-form form:first-child .field input {
+  height: 30px;
+  font-size: 17px; /* ⬆️ */
+  padding: 12px 14px;
+}
+
+/* Placeholder */
+.registration-form form:first-child .field input::placeholder {
+  font-size: 16px;
+  color: #6b7280;
+}
+
+/* Proceed button */
+.registration-form form:first-child .btn-primary {
+  display: block;
+  font-size: 16.5px; /* ⬆️ */
+  padding: 12px 34px;
+}
+
+
+/* ==================================================
+   SECTION SPACING (FOR LONG FORMS)
+================================================== */
+.registration-form section {
+  margin-bottom: 24px;
+}
+
+/* ================= APPLICANT TABLE ================= */
+
+.applicant-table-wrapper {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 6px;
+  background-color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Heading */
+.applicant-table-wrapper h3 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Table */
+.applicant-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* Header */
+.applicant-table thead th {
+  background-color: #f2f4f7;
+  color: #222;
+  font-weight: 600;
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+/* Body cells */
+.applicant-table tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+  color: #333;
+}
+
+/* Zebra rows */
+.applicant-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Hover */
+.applicant-table tbody tr:hover {
+  background-color: #eef3ff;
+}
+
+/* Action button */
+.applicant-table .btn-primary {
+  padding: 6px 14px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Empty state */
+.applicant-table tbody td[colspan] {
+  padding: 14px;
+  color: #777;
+}
+
+/* ================= TABLE SEARCH ================= */
+
+.table-search {
+  margin-bottom: 12px;
+}
+
+.table-search input {
+  width: 100%;
+  max-width: 360px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.table-search input:focus {
+  outline: none;
+  border-color: #4a67ff;
+}
+
+/* Dark mode */
+body.dark .table-search input {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+
+/* ================= DARK MODE SUPPORT ================= */
+
+body.dark .applicant-table-wrapper {
+  background-color: #1f1f1f;
+  box-shadow: none;
+}
+
+body.dark .applicant-table-wrapper h3 {
+  color: #e0e0e0;
+}
+
+body.dark .applicant-table thead th {
+  background-color: #2b2b2b;
+  color: #eaeaea;
+  border-color: #444;
+}
+
+body.dark .applicant-table tbody td {
+  border-color: #444;
+  color: #ddd;
+}
+
+body.dark .applicant-table tbody tr:nth-child(even) {
+  background-color: #242424;
+}
+
+body.dark .applicant-table tbody tr:hover {
+  background-color: #2f3a55;
+}
+
+
+/* ==================================================
+   RESPONSIVE (MOBILE SAFE)
+================================================== */
+@media (max-width: 768px) {
+  .registration-form {
+    padding: 16px;
+  }
+
+  .registration-form form {
+    padding: 20px;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}

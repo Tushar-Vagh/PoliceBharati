@@ -1,0 +1,93 @@
+.rejection-paper-container {
+    background-color: #e2e8f0;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.police-form-exact {
+    background-color: white;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 10mm 15mm;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-family: 'Times New Roman', serif;
+    font-size: 12px; /* Smaller font as requested */
+    line-height: 1.35;
+    color: black;
+}
+
+.header-section { text-align: center; margin-bottom: 5px; }
+.header-section h2 { font-size: 18px; margin: 0; }
+.header-section h3 { font-size: 14px; margin: 2px 0; }
+.motto { font-weight: bold; font-size: 12px; margin: 0; }
+
+.contact-info-strip {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    border-bottom: 1px solid black;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+.reference-section p { margin: 1px 0; font-weight: bold; }
+
+.dotted-input {
+    border: none !important;
+    border-bottom: 1px dotted black !important;
+    padding: 0 5px;
+    font-size: 12px;
+    background: transparent;
+}
+
+.input-row { margin: 4px 0; display: flex; align-items: center; gap: 5px; }
+
+.subject-line {
+    text-align: center;
+    text-decoration: underline;
+    margin: 10px 0;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.rejection-list { list-style: none; padding-left: 10px; }
+.rejection-list li {
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+}
+
+.check-box {
+    width: 14px;
+    height: 14px;
+    border: 1px solid black;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.center-text { text-align: center; text-decoration: underline; margin: 10px 0 5px 0; }
+.bond-body { font-size: 11px; text-align: justify; margin: 8px 0; }
+
+.btn-print-small {
+    background: #0f172a;
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@media print {
+    .no-print { display: none !important; }
+    .rejection-paper-container { padding: 0; background: none; }
+    .police-form-exact {
+        width: 100%;
+        padding: 5mm;
+        box-shadow: none;
+    }
+}

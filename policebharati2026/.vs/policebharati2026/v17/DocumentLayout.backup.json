@@ -1,0 +1,236 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\controllers\\petcandidatescorecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\controllers\\petcandidatescorecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\services\\petcandidatescoreservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\services\\petcandidatescoreservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\services\\masterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\services\\masterservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\data\\sqlhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\data\\sqlhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\models\\petcandidatescoremodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\models\\petcandidatescoremodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\dtos\\petcandidatescoredto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\dtos\\petcandidatescoredto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\controllers\\mastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\controllers\\mastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\policebharati2026.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\policebharati2026.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\models\\mastermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\models\\mastermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\dtos\\masterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\dtos\\masterdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|c:\\users\\sakshi\\onedrive\\desktop\\pb2026\\policebharati2026\\policebharati2026\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{61AF27D0-F8C2-406D-ACA6-8705E68B79F9}|policebharati2026\\policebharati2026.csproj|solutionrelative:policebharati2026\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PetCandidateScoreService.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Services\\PetCandidateScoreService.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Services\\PetCandidateScoreService.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Services\\PetCandidateScoreService.cs",
+              "RelativeToolTip": "policebharati2026\\Services\\PetCandidateScoreService.cs",
+              "ViewState": "AgIAAKsAAAAAAAAAAAAAAMoAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T10:11:59.387Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Program.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Program.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Program.cs",
+              "RelativeToolTip": "policebharati2026\\Program.cs",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAAAE0AAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T05:34:41.767Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SqlHelper.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Data\\SqlHelper.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Data\\SqlHelper.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Data\\SqlHelper.cs",
+              "RelativeToolTip": "policebharati2026\\Data\\SqlHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T06:53:51.173Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PetCandidateScoreController.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Controllers\\PetCandidateScoreController.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Controllers\\PetCandidateScoreController.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Controllers\\PetCandidateScoreController.cs",
+              "RelativeToolTip": "policebharati2026\\Controllers\\PetCandidateScoreController.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAgwDkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T10:12:31.361Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MasterService.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Services\\MasterService.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Services\\MasterService.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Services\\MasterService.cs",
+              "RelativeToolTip": "policebharati2026\\Services\\MasterService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T05:31:57.548Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PetCandidateScoreModel.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Models\\PetCandidateScoreModel.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Models\\PetCandidateScoreModel.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Models\\PetCandidateScoreModel.cs",
+              "RelativeToolTip": "policebharati2026\\Models\\PetCandidateScoreModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T10:10:40.872Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PetCandidateScoreDto.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\DTOs\\PetCandidateScoreDto.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\DTOs\\PetCandidateScoreDto.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\DTOs\\PetCandidateScoreDto.cs",
+              "RelativeToolTip": "policebharati2026\\DTOs\\PetCandidateScoreDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T10:11:17.818Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MasterController.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Controllers\\MasterController.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Controllers\\MasterController.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Controllers\\MasterController.cs",
+              "RelativeToolTip": "policebharati2026\\Controllers\\MasterController.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAqwEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T05:30:14.232Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "policebharati2026.csproj",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\policebharati2026.csproj",
+              "RelativeDocumentMoniker": "policebharati2026\\policebharati2026.csproj",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\policebharati2026.csproj",
+              "RelativeToolTip": "policebharati2026\\policebharati2026.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-10T05:30:38.4Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MasterModel.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Models\\MasterModel.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\Models\\MasterModel.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Models\\MasterModel.cs",
+              "RelativeToolTip": "policebharati2026\\Models\\MasterModel.cs",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAUwH8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T05:33:22.439Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MasterDto.cs",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\DTOs\\MasterDto.cs",
+              "RelativeDocumentMoniker": "policebharati2026\\DTOs\\MasterDto.cs",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\DTOs\\MasterDto.cs",
+              "RelativeToolTip": "policebharati2026\\DTOs\\MasterDto.cs",
+              "ViewState": "AgIAAGMAAAAAAAAAAAAUwH4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-10T05:31:28.524Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\appsettings.json",
+              "RelativeDocumentMoniker": "policebharati2026\\appsettings.json",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\appsettings.json",
+              "RelativeToolTip": "policebharati2026\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-10T05:34:56.472Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "policebharati2026\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\Sakshi\\OneDrive\\Desktop\\pb2026\\policebharati2026\\policebharati2026\\Properties\\launchSettings.json",
+              "RelativeToolTip": "policebharati2026\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-01-10T05:36:33.346Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

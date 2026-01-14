@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\policebharati2026.props" />
+</Project>

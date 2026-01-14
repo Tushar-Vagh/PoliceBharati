@@ -1,0 +1,167 @@
+/* BASE LAYOUT */
+.admin-layout {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* REUSED HEADER FROM VERIFICATION */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #1e293b;
+    color: white;
+    border-bottom: 4px solid #4DB6AC;
+}
+
+.admin-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.flat-back-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.status-badge {
+    background: #4DB6AC;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+/* UPLOAD CONTENT AREA */
+.upload-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.upload-card {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    padding: 50px;
+    border-radius: 24px; /* Matches your dashboard buttons */
+    border: 1px solid #1e293b;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* ICON SECTION */
+.upload-icon-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    background-color: #f8fafc;
+    border: 2px dashed #4DB6AC;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-arrow {
+    font-size: 2rem;
+    color: #4DB6AC;
+    font-weight: bold;
+}
+
+.upload-main-title {
+    font-size: 1.4rem;
+    color: #1e293b;
+    margin: 0;
+}
+
+.upload-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* DROP ZONE */
+.drop-zone {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 30px 20px;
+    background-color: #f8fafc;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.drop-zone:hover {
+    border-color: #4DB6AC;
+    background-color: #f0fdfa;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.file-label {
+    display: block;
+    cursor: pointer;
+    color: #334155;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* BUTTONS */
+.action-btn {
+    background-color: #1e293b;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.action-btn:hover:not(:disabled) {
+    background-color: #4DB6AC;
+}
+
+.action-btn.loading {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+.clear-btn {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    font-family: 'Times New Roman', Times, serif;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 600;
+}
