@@ -287,9 +287,42 @@
   border-radius: 25px;
 }
 
+.green-tick {
+  color: #1aa260;
+  font-weight: bold;
+  margin-left: 6px;
+  font-size: 16px;
+}
+
+/* Measurement submit buttons */
+.measure-btn {
+  padding: 6px 14px;
+  margin-left: 8px;
+  background: linear-gradient(135deg, #1f3c88, #2f58cd);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.measure-btn:hover {
+  background: linear-gradient(135deg, #163172, #1f4fb2);
+  transform: translateY(-1px);
+}
+
+.measure-btn:disabled {
+  background: #9aa4b2;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
 
 @media print {
     .no-print { display: none !important; }
     .receipt-area { padding: 0; }
     .official-receipt { width: 100%; border: none; } /* Better fit for A4 */
 }
+

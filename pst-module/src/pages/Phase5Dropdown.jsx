@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import "../styles//Phase5Menu.css";
+import "../styles/Phase5Menu.css";
+
+/* ================================
+   CONFIG – API BASE URL (VITE SAFE)
+   ================================ */
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
+  "http://localhost:5000";
 
 /* ---------- Reusable Dropdown ---------- */
 function Dropdown({ title, items, onItemClick }) {
@@ -10,7 +17,7 @@ function Dropdown({ title, items, onItemClick }) {
       <button
         type="button"
         className="dropdown-btn"
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen((prev) => !prev)}
       >
         {title}
         <span className="arrow">{open ? "▲" : "▼"}</span>
@@ -38,144 +45,138 @@ function Dropdown({ title, items, onItemClick }) {
 
 /* ---------- Phase 5 Component ---------- */
 export default function Phase5Dropdown() {
+  /* ================================
+     PDF DOWNLOAD HANDLER
+     ================================ */
+  const downloadReport = async (type) => {
+    try {
+      let url = "";
+      let fileName = "";
 
-  /* ===== EXISTING LOGIC – EXTENDED (NOT BROKEN) ===== */
- const downloadExcel = async (type) => {
-  try {
-    let url = "";
-    let fileName = "";
+      switch (type) {
+        case "passed":
+          url = `${API_BASE_URL}/api/reports/passed-candidates-pdf`;
+          fileName = "All_Passed_Candidates.pdf";
+          break;
 
-    if (type === "passed") {
-      url = "http://localhost:5000/api/reports/passed-candidates";
-      fileName = "All_Passed_Candidates.xlsx";
+        case "failed":
+          url = `${API_BASE_URL}/api/reports/failed-candidates-pdf`;
+          fileName = "All_Failed_Candidates.pdf";
+          break;
 
-    } else if (type === "failed") {
-      url = "http://localhost:5000/api/reports/failed-candidates";
-      fileName = "All_Failed_Candidates.xlsx";
+        case "total-registration":
+          url = `${API_BASE_URL}/api/reports/total-registration-pdf`;
+          fileName = "Total_Registration.pdf";
+          break;
 
-    } else if (type === "total-registration") {
-      url = "http://localhost:5000/api/reports/total-registration";
-      fileName = "Total_Registration.xlsx";
+        case "selected":
+          url = `${API_BASE_URL}/api/reports/selected-candidates-pdf`;
+          fileName = "Selected_Candidates_List.pdf";
+          break;
 
-    } else if (type === "selected") {
-      url = "http://localhost:5000/api/reports/selected-candidates";
-      fileName = "Selected_Candidates_List.xlsx";
+        case "rejected":
+          url = `${API_BASE_URL}/api/reports/rejected-candidates-pdf`;
+          fileName = "Rejected_Candidates_List.pdf";
+          break;
 
-    } else if (type === "rejected") {
-      url = "http://localhost:5000/api/reports/rejected-candidates";
-      fileName = "Rejected_Candidates_List.xlsx";
+        case "verified":
+          url = `${API_BASE_URL}/api/reports/verified-candidates-pdf`;
+          fileName = "Verified_Candidates_List.pdf";
+          break;
 
-    } else if (type === "verified") {
-      url = "http://localhost:5000/api/reports/verified-candidates";
-      fileName = "Verified_Candidates_List.xlsx";
+        case "unverified":
+          url = `${API_BASE_URL}/api/reports/unverified-candidates-pdf`;
+          fileName = "Unverified_Candidates_List.pdf";
+          break;
 
-    } else if (type === "unverified") {
-      url = "http://localhost:5000/api/reports/unverified-candidates";
-      fileName = "Unverified_Candidates_List.xlsx";
+        case "pet-event-wise":
+          url = `${API_BASE_URL}/api/reports/pet-event-wise-report-pdf`;
+          fileName = "PET_Event_Wise_Report.pdf";
+          break;
 
-    } else if (type === "pet-event-wise") {
-      url = "http://localhost:5000/api/reports/pet-event-wise-report";
-      fileName = "PET_Event_Wise_Report.xlsx";
+        case "pet-final-constable":
+          url = `${API_BASE_URL}/api/reports/pet-final-constable-pdf`;
+          fileName = "PET_Final_Constable.pdf";
+          break;
 
-    } else if (type === "PET_Final_Constable") {
-      url = "http://localhost:5000/api/reports/pet-final-constable";
-      fileName = "PET_Final_Constable.xlsx";
+        case "pet-final-driver":
+          url = `${API_BASE_URL}/api/reports/pet-final-driver-pdf`;
+          fileName = "PET_Final_Driver.pdf";
+          break;
 
-    } else if (type === "pet-final-driver") {
-      url = "http://localhost:5000/api/reports/pet-final-driver";
-      fileName = "PET_Final_Driver.xlsx";
+        case "audit-report":
+          url = `${API_BASE_URL}/api/reports/audit-report-pdf`;
+          fileName = "Audit_Report.pdf";
+          break;
 
-    } else if (type === "audit-report") {
-      url = "http://localhost:5000/api/reports/audit-report";
-      fileName = "Audit_Report.xlsx";
+        case "final-selection":
+          url = `${API_BASE_URL}/api/reports/final-selection-pdf`;
+          fileName = "Final_Selection.pdf";
+          break;
 
-    } else {
-      alert(`Clicked: ${type}`);
-      return;
-    }
+        
 
-    const response = await fetch(url);
+        default:
+          alert("Invalid report type");
+          return;
+      }
 
-    // ===== EMPTY EXCEL VALIDATION =====
-    if (response.status === 404) {
-      const message = await response.text();
-      alert(message);
-      return;
-    }
+      const response = await fetch(url);
 
-    if (!response.ok) throw new Error("Download failed");
+      if (!response.ok) {
+        const msg = await response.text();
+        alert(msg || "No data available");
+        return;
+      }
 
-    const blob = await response.blob();
-    const downloadUrl = window.URL.createObjectURL(blob);
+      const blob = await response.blob();
+      const objectUrl = window.URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = downloadUrl;
-    link.download = fileName;
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    alert("Error downloading Excel");
-    console.error(error);
-  }
-};
-
-
-  /* ===== CLICK HANDLER ===== */
-  const handleClick = (item) => {
-    switch (item) {
-      case "Total Registration":
-        downloadExcel("total-registration");
-        break;
-
-      case "All Passed Candidates":
-        downloadExcel("passed");
-        break;
-
-      case "All Failed Candidates":
-        downloadExcel("failed");
-        break;
-
-      case "Selected Candidates List":
-        downloadExcel("selected");
-        break;
-
-      case "Rejected Candidates List":
-        downloadExcel("rejected");
-        break;
-
-      case "Verified Candidates List":
-        downloadExcel("verified");
-        break;
-
-      case "Unverified Candidates List":
-        downloadExcel("unverified");
-        break;
-
-      case "PET Event Wise Report":
-        downloadExcel("pet-event-wise");
-        break;
-
-      case "Constable":
-        downloadExcel("PET_Final_Constable");
-        break;
-
-      case "Driver":
-        downloadExcel("pet-final-driver");
-        break;
-
-      case "Audit Report":
-  downloadExcel("audit-report");
-  break;
-
-      
-      default:
-        alert(`Clicked: ${item}`);
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to download PDF");
     }
   };
 
-  /* ===== PHASE-5 SUB ITEMS ===== */
+  /* ================================
+     CLICK HANDLER
+     ================================ */
+  const handleClick = (item) => {
+    const map = {
+      "Total Registration": "total-registration",
+      "All Passed Candidates": "passed",
+      "All Failed Candidates": "failed",
+      "Selected Candidates List": "selected",
+      "Rejected Candidates List": "rejected",
+      "Verified Candidates List": "verified",
+      "Unverified Candidates List": "unverified",
+      "PET Event Wise Report": "pet-event-wise",
+      "Constable": "pet-final-constable",
+      "Driver": "pet-final-driver",
+      "Audit Report": "audit-report",
+      "Overall Rank / Final Selection":"final-selection"
+    };
+
+    const key = map[item];
+    if (!key) {
+      alert(`Unknown option: ${item}`);
+      return;
+    }
+
+    downloadReport(key);
+  };
+
+  /* ================================
+     DROPDOWN ITEMS
+     ================================ */
   const recordFetchItems = [
     "Total Registration",
     "Selected Candidates List",
@@ -196,55 +197,20 @@ export default function Phase5Dropdown() {
     "Driver",
   ];
 
-  const administrativeItems = [
-    // "Administrative Report",
-    "Audit Report",
-  ];
+  const administrativeItems = ["Audit Report"];
 
-  const finalMeritItems = [
-    //"Final Merit Report",
-    "Overall Rank / Final Selection",
-  ];
+  const finalMeritItems = ["Overall Rank / Final Selection"];
 
   return (
     <div className="container">
       <h2 className="title">FINAL REPORT</h2>
 
-      <Dropdown
-        title="Record Fetch"
-        items={recordFetchItems}
-        onItemClick={handleClick}
-      />
-
-      <Dropdown
-        title="Biometric Report"
-        items={biometricItems}
-        onItemClick={handleClick}
-      />
-
-      <Dropdown
-        title="PET Report"
-        items={petReportItems}
-        onItemClick={handleClick}
-      />
-
-      <Dropdown
-        title="PET Final Status"
-        items={petFinalStatusItems}
-        onItemClick={handleClick}
-      />
-
-      <Dropdown
-        title="Administrative Report"
-        items={administrativeItems}
-        onItemClick={handleClick}
-      />
-
-      <Dropdown
-        title="Final Merit"
-        items={finalMeritItems}
-        onItemClick={handleClick}
-      />
+      <Dropdown title="Record Fetch" items={recordFetchItems} onItemClick={handleClick} />
+      <Dropdown title="Biometric Report" items={biometricItems} onItemClick={handleClick} />
+      <Dropdown title="PET Report" items={petReportItems} onItemClick={handleClick} />
+      <Dropdown title="PET Final Status" items={petFinalStatusItems} onItemClick={handleClick} />
+      <Dropdown title="Administrative Report" items={administrativeItems} onItemClick={handleClick} />
+      <Dropdown title="Final Merit" items={finalMeritItems} onItemClick={handleClick} />
     </div>
   );
 }

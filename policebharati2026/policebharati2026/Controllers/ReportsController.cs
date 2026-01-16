@@ -2,8 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using OfficeOpenXml;
 using System.Data;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
+using iText.Kernel.Font;
+using iText.IO.Font.Constants;
+using iText.Bouncycastleconnector;   // ✅ REQUIRED
+using System.IO;
 
-namespace policebharati2026.Controllers
+namespace MyApi.Controllers
 {
     [ApiController]
     [Route("api/reports")]
@@ -14,12 +22,36 @@ namespace policebharati2026.Controllers
         public ReportsController(IConfiguration configuration)
         {
             _configuration = configuration;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
-        private void AddSheetFromQuery(
-    ExcelPackage package,
-    string sheetName,
-    string query)
+        private IActionResult GenerateSinglePdf(string title, string query, string fileName)
+{
+    using var stream = new MemoryStream();
+
+    PdfWriter writer = new PdfWriter(stream);
+    PdfDocument pdf = new PdfDocument(writer);
+    Document document = new Document(pdf,iText.Kernel.Geom.PageSize.A4.Rotate());
+    document.SetMargins(20, 20, 20, 20);
+
+    document.Add(new Paragraph(title)
+        .SetTextAlignment(TextAlignment.CENTER)
+        .SetFontSize(16)
+        .SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD)));
+
+    AddPdfTableFromQuery(document, title, query);
+
+    document.Close();
+
+    return File(stream.ToArray(), "application/pdf", fileName);
+}
+
+
+
+        // =========================
+        // EXCEL HELPER (UNCHANGED)
+        // =========================
+        private void AddSheetFromQuery(ExcelPackage package, string sheetName, string query)
         {
             var dt = new DataTable();
 
@@ -44,677 +76,308 @@ namespace policebharati2026.Controllers
             ws.Cells.AutoFitColumns();
         }
 
+        // =========================
+        // PDF HELPER (FIXED)
+        // =========================
+     private void AddPdfTableFromQuery(Document document, string title, string query)
+{
+    var dt = new DataTable();
 
-        // =========================
-        // TOTAL REGISTRATION (NEW)
-        // =========================
-        [HttpGet("total-registration")]
-        public IActionResult DownloadTotalRegistrationExcel()
+    using (SqlConnection con = new SqlConnection(
+        _configuration.GetConnectionString("DefaultConnection")))
+    {
+        using SqlDataAdapter da = new SqlDataAdapter(query, con);
+        da.Fill(dt);
+    }
+
+    // Fonts
+    PdfFont boldFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+    PdfFont normalFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA);
+
+    // ===== Section Title =====
+    document.Add(
+        new Paragraph(title)
+            .SetFont(boldFont)
+            .SetFontSize(14)
+            .SetMarginTop(20)
+            .SetMarginBottom(10)
+    );
+
+    if (dt.Rows.Count == 0)
+    {
+        document.Add(new Paragraph("No records found").SetFont(normalFont));
+        return;
+    }
+
+    // ===== Table =====
+    Table table = new Table(dt.Columns.Count)
+        .UseAllAvailableWidth()
+        .SetKeepTogether(false); // ✅ allows page breaks
+
+    // ===== Header Row =====
+    foreach (DataColumn col in dt.Columns)
+    {
+        Cell headerCell = new Cell()
+            .Add(new Paragraph(col.ColumnName)
+                .SetFont(boldFont)
+                .SetFontSize(9))
+            .SetTextAlignment(TextAlignment.CENTER);
+
+        table.AddHeaderCell(headerCell);
+    }
+
+    // ===== Data Rows =====
+    foreach (DataRow row in dt.Rows)
+    {
+        foreach (object? value in row.ItemArray)
         {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-                    SELECT 
-                        Username,
-                        ApplicationNo,
-                        CONCAT(
-                            FirstName_English, ' ',
-                            FatherName_English, ' ',
-                            Surname_English
-                        ) AS FullName,
-                        MotherName_English,
-                        Gender,
-                        DOB,
-                        ApplicationDate
-                    FROM master";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-
-                if (dt.Rows.Count == 0)
-                {
-                    return NotFound("No records found. Excel file was not generated.");
-                }
-            }
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Total Registration");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Total_Registration.xlsx"
+            table.AddCell(
+                new Cell()
+                    .Add(new Paragraph(value?.ToString() ?? "")
+                        .SetFont(normalFont)
+                        .SetFontSize(9))
             );
         }
+    }
 
-        // =========================
-        // PASSED CANDIDATES (UNCHANGED)
-        // =========================
-        [HttpGet("passed-candidates")]
-        public IActionResult DownloadPassedCandidatesExcel()
-        {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-                    SELECT
-                        pst.application_number,
-                        pst.height_cm,
-                        pst.chest_cm,
-                        pst.weight_kg,
-                        pst.pst_status,
-                        COALESCE(
-                            LTRIM(RTRIM(m.FirstName_English)) + ' ' +
-                            LTRIM(RTRIM(m.FatherName_English)) + ' ' +
-                            LTRIM(RTRIM(m.Surname_English)),
-                            'NAME NOT FOUND'
-                        ) AS Candidate_Name
-                    FROM physical_standard_test pst
-                    LEFT JOIN Master m
-                        ON LTRIM(RTRIM(pst.application_number)) = LTRIM(RTRIM(m.ApplicationNo))
-                    WHERE pst.Stage = 1002
-                      AND UPPER(LTRIM(RTRIM(pst.pst_status))) LIKE 'PASS%'";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-
-                if (dt.Rows.Count == 0)
-                {
-                    return NotFound("No records found. Excel file was not generated.");
-                }
-            }
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Passed Candidates");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "All_Passed_Candidates.xlsx"
-            );
-        }
-
-        // =========================
-        // FAILED CANDIDATES (UNCHANGED)
-        // =========================
-        [HttpGet("failed-candidates")]
-        public IActionResult DownloadFailedCandidatesExcel()
-        {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-                    SELECT
-                        pst.application_number,
-                        pst.height_cm,
-                        pst.chest_cm,
-                        pst.weight_kg,
-                        pst.pst_status,
-                        COALESCE(
-                            LTRIM(RTRIM(m.FirstName_English)) + ' ' +
-                            LTRIM(RTRIM(m.FatherName_English)) + ' ' +
-                            LTRIM(RTRIM(m.Surname_English)),
-                            'NAME NOT FOUND'
-                        ) AS Candidate_Name
-                    FROM physical_standard_test pst
-                    LEFT JOIN Master m
-                        ON LTRIM(RTRIM(pst.application_number)) = LTRIM(RTRIM(m.ApplicationNo))
-                    WHERE pst.Stage = 1002
-                      AND UPPER(LTRIM(RTRIM(pst.pst_status))) LIKE 'FAIL%'";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-
-                if (dt.Rows.Count == 0)
-                {
-                    return NotFound("No records found. Excel file was not generated.");
-                }
-            }
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Failed Candidates");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "All_Failed_Candidates.xlsx"
-            );
-        }
-        // =========================
-        // SELECTED CANDIDATES LIST
-        // =========================
-        [HttpGet("selected-candidates")]
-        public IActionResult DownloadSelectedCandidatesExcel()
-        {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-            SELECT 
-                applicationno,
-                username,
-                CONCAT(
-                    FirstName_English, ' ',
-                    FatherName_English, ' ',
-                    Surname_English
-                ) AS FullName,
-                MotherName_English,
-                Gender,
-                DOB,
-                ApplicationDate
-            FROM master
-            WHERE Stage = 1001";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-
-                if (dt.Rows.Count == 0)
-                {
-                    return NotFound("No records found. Excel file was not generated.");
-                }
-            }
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Selected Candidates");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Selected_Candidates_List.xlsx"
-            );
-        }
+    document.Add(table);
+}
 
 
         // =========================
-        // REJECTED CANDIDATES LIST
-        // =========================
-        [HttpGet("rejected-candidates")]
-        public IActionResult DownloadRejectedCandidatesExcel()
-        {
-            var dt = new DataTable();
+// TOTAL REGISTRATION – PDF
+// =========================
+[HttpGet("total-registration-pdf")]
+public IActionResult TotalRegistrationPdf()
+{
+    return GenerateSinglePdf(
+        "Total Registration",
+        "SELECT Username, ApplicationNo, CONCAT(FirstName_English,' ',FatherName_English,' ',Surname_English) AS FullName, MotherName_English, Gender, DOB, ApplicationDate FROM master",
+        "Total_Registration.pdf"
+    );
+}
 
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-            SELECT 
-                applicationno,
-                username,
-                CONCAT(
-                    FirstName_English, ' ',
-                    FatherName_English, ' ',
-                    Surname_English
-                ) AS FullName,
-                MotherName_English,
-                Gender,
-                DOB,
-                ApplicationDate
-            FROM master
-            WHERE Stage = 1004";
+// =========================
+// PASSED CANDIDATES – PDF
+// =========================
+[HttpGet("passed-candidates-pdf")]
+public IActionResult PassedCandidatesPdf()
+{
+    return GenerateSinglePdf(
+        "Passed Candidates",
+        "SELECT pst_id,application_number,height_cm,chest_cm,weight_kg,pst_status,chest_no FROM physical_standard_test  WHERE pst_status LIKE 'PASS%'",
+        "All_Passed_Candidates.pdf"
+    );
+}
 
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
+// =========================
+// FAILED CANDIDATES – PDF
+// =========================
+[HttpGet("failed-candidates-pdf")]
+public IActionResult FailedCandidatesPdf()
+{
+    return GenerateSinglePdf(
+        "Failed Candidates",
+        "SELECT pst_id,application_number,height_cm,chest_cm,weight_kg,pst_status,chest_no FROM physical_standard_test  WHERE pst_status LIKE 'FAIL%'",
+        "All_Failed_Candidates.pdf"
+    );
+}
 
-                if (dt.Rows.Count == 0)
-                {
-                    return NotFound("No records found. Excel file was not generated.");
-                }
-            }
+// =========================
+// SELECTED CANDIDATES – PDF
+// =========================
+[HttpGet("selected-candidates-pdf")]
+public IActionResult SelectedCandidatesPdf()
+{
+    return GenerateSinglePdf(
+        "Selected Candidates",
+        "SELECT * FROM master WHERE Stage = 1002",
+        "Selected_Candidates_List.pdf"
+    );
+}
 
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Rejected Candidates");
+// =========================
+// REJECTED CANDIDATES – PDF
+// =========================
+[HttpGet("rejected-candidates-pdf")]
+public IActionResult RejectedCandidatesPdf()
+{
+    return GenerateSinglePdf(
+        "Rejected Candidates",
+        "SELECT * FROM master WHERE Stage = 1004",
+        "Rejected_Candidates_List.pdf"
+    );
+}
 
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
+// =========================
+// VERIFIED BIOMETRICS – PDF
+// =========================
+[HttpGet("verified-candidates-pdf")]
+public IActionResult VerifiedCandidatesPdf()
+{
+    return GenerateSinglePdf(
+        "Verified Biometrics",
+        "SELECT * FROM Fingerprints WHERE stage = 1002",
+        "Verified_Candidates_List.pdf"
+    );
+}
 
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Rejected_Candidates_List.xlsx"
-            );
-        }
+// =========================
+// UNVERIFIED BIOMETRICS – PDF
+// =========================
+[HttpGet("unverified-candidates-pdf")]
+public IActionResult UnverifiedCandidatesPdf()
+{
+    return GenerateSinglePdf(
+        "Unverified Biometrics",
+        "SELECT * FROM Fingerprints WHERE stage = 1004",
+        "Unverified_Candidates_List.pdf"
+    );
+}
 
-        // =========================
-        // VERIFIED CANDIDATES (BIOMETRIC)
-        // =========================
-        [HttpGet("verified-candidates")]
-        public IActionResult DownloadVerifiedCandidatesExcel()
-        {
-            var dt = new DataTable();
+// =========================
+// PET EVENT WISE – PDF
+// =========================
+[HttpGet("pet-event-wise-report-pdf")]
+public IActionResult PetEventWisePdf()
+{
+    return GenerateSinglePdf(
+        "PET Event Wise Report",
+        "SELECT pet_id,application_no,chest_no,event_name,start_time,end_time,shot_put_weight_kg,attempt_no,total_event_marks,recorded_datetime FROM pet_candidate_score",
+        "PET_Event_Wise_Report.pdf"
+    );
+}
 
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-            SELECT 
-                UserId,
-                Template,
-                stage,
-                application_no
-            FROM Fingerprints
-            WHERE stage = 1002";
+// =========================
+// PET FINAL CONSTABLE – PDF
+// =========================
+[HttpGet("pet-final-constable-pdf")]
+public IActionResult PetFinalConstablePdf()
+{ 
+    return GenerateSinglePdf(
+        "PET Final Constable",
+        "SELECT application_no,chest_no, event_name,start_time, end_time,total_event_marks FROM dbo.pet_candidate_score WHERE chest_no LIKE '%ch%' AND (Stage<>1004 OR Stage IS NULL)",
+        "PET_Final_Constable.pdf"
+    );
+}
 
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-            }
-
-            // ✅ Validation – no records
-            if (dt.Rows.Count == 0)
-            {
-                return BadRequest("No verified candidates found.");
-            }
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Verified Candidates");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Verified_Candidates.xlsx"
-            );
-        }
-
-        // =========================
-        // UNVERIFIED CANDIDATES (BIOMETRIC)
-        // =========================
-        [HttpGet("unverified-candidates")]
-        public IActionResult DownloadUnverifiedCandidatesExcel()
-        {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-            SELECT 
-                UserId,
-                Template,
-                application_no
-            FROM Fingerprints
-            WHERE stage = 1004";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-            }
-
-            // ✅ Validation – no records
-            if (dt.Rows.Count == 0)
-            {
-                return BadRequest("No unverified candidates found.");
-            }
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Unverified Candidates");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Unverified_Candidates.xlsx"
-            );
-        }
-
-        // =========================
-        // PET EVENT WISE REPORT
-        // =========================
-        [HttpGet("pet-event-wise-report")]
-        public IActionResult DownloadPetEventWiseReportExcel()
-        {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-            SELECT 
-                pst_id,
-                application_number,
-                height_cm,
-                chest_cm,
-                weight_kg,
-                pst_status,
-                measured_by_officer_id,
-                measurement_date_time,
-                remarks,
-                receipt_number,
-                receipt_generated,
-                Stage
-            FROM dbo.physical_standard_test";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-            }
-
-            // ✅ Validation – no records
-            if (dt.Rows.Count == 0)
-            {
-                return BadRequest("No PET event records found.");
-            }
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("PET Event Wise Report");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "PET_Event_Wise_Report.xlsx"
-            );
-        }
-
-        // =========================
-        // PET FINAL STATUS – CONSTABLE
-        // =========================
-        [HttpGet("pet-final-constable")]
-        public IActionResult DownloadPetFinalConstableExcel()
-        {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-            SELECT 
-    pet_id, 
-    application_no, 
-    chest_no, 
-    candidate_category, 
-    event_name, 
-    unit_type, 
-    start_time, 
-    end_time, 
-    time_taken_sec, 
-    distance_achieved_m, 
-    shot_put_weight_kg, 
-    attempt_no, 
-    is_best_attempt, 
-    marks_awarded, 
-    total_event_marks, 
-    remarks, 
-    recorded_by, 
-    recorded_datetime, 
-    Stage
-FROM dbo.pet_candidate_score 
-WHERE chest_no LIKE '%ch%' 
-AND (Stage <> 1004 OR Stage IS NULL);";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-            }
-
-            // ✅ IMPORTANT VALIDATION
-            if (dt.Rows.Count == 0)
-                return NotFound("No Constable PET records found");
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Constable PET");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            var fileBytes = package.GetAsByteArray();
-
-            return File(
-                fileBytes,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "PET_Final_Constable.xlsx"
-            );
-        }
+// =========================
+// PET FINAL DRIVER – PDF
+// =========================
+[HttpGet("pet-final-driver-pdf")]
+public IActionResult PetFinalDriverPdf()
+{
+    return GenerateSinglePdf(
+        "PET Final Driver",
+        "SELECT application_no,chest_no, event_name,start_time, end_time,total_event_marks FROM pet_candidate_score WHERE chest_no LIKE '%DR%' AND (Stage<>1004 OR Stage IS NULL)",
+        "PET_Final_Driver.pdf"
+    );
+}
 
 
         // =========================
-        // PET FINAL STATUS – DRIVER
+        // AUDIT REPORT – EXCEL
         // =========================
-        [HttpGet("pet-final-driver")]
-        public IActionResult DownloadPetFinalDriverExcel()
-        {
-            var dt = new DataTable();
-
-            using (SqlConnection con = new SqlConnection(
-                _configuration.GetConnectionString("DefaultConnection")))
-            {
-                string query = @"
-            SELECT 
-                pet_id, application_no, chest_no, candidate_category,
-                event_name, unit_type, start_time, end_time,
-                time_taken_sec, distance_achieved_m,
-                shot_put_weight_kg, attempt_no, is_best_attempt,
-                marks_awarded, total_event_marks, remarks,
-                recorded_by, recorded_datetime, Stage
-            FROM dbo.pet_candidate_score
-            WHERE chest_no LIKE '%DR%'
-              AND (Stage <> 1004 OR Stage IS NULL);";
-
-                using SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
-            }
-
-            // ✅ Validation if no records
-            if (dt.Rows.Count == 0)
-                return NotFound("No Driver PET records found");
-
-            using var package = new ExcelPackage();
-            var ws = package.Workbook.Worksheets.Add("Driver PET");
-
-            ws.Cells["A1"].LoadFromDataTable(dt, true);
-            ws.Cells[1, 1, 1, dt.Columns.Count].Style.Font.Bold = true;
-            ws.Cells.AutoFitColumns();
-
-            return File(
-                package.GetAsByteArray(),
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "PET_Final_Driver.xlsx"
-            );
-        }
-
-
-
-
         [HttpGet("audit-report")]
-        public IActionResult DownloadAuditReport()
+        public IActionResult DownloadAuditReportExcel()
         {
             using var package = new ExcelPackage();
 
-            AddSheetFromQuery(
-                package,
-                "Total Registration",
-               @"
-                    SELECT 
-                        Username,
-                        ApplicationNo,
-                        CONCAT(
-                            FirstName_English, ' ',
-                            FatherName_English, ' ',
-                            Surname_English
-                        ) AS FullName,
-                        MotherName_English,
-                        Gender,
-                        DOB,
-                        ApplicationDate
-                    FROM master");
+            AddSheetFromQuery(package, "Total Registration",
+                "SELECT Username, ApplicationNo, CONCAT(FirstName_English,' ',FatherName_English,' ',Surname_English) AS FullName, MotherName_English, Gender, DOB, ApplicationDate FROM master");
 
-            AddSheetFromQuery(
-                package,
-                "Selected Candidates",
-                 @"
-                    SELECT
-                        pst.application_number,
-                        pst.height_cm,
-                        pst.chest_cm,
-                        pst.weight_kg,
-                        pst.pst_status,
-                        COALESCE(
-                            LTRIM(RTRIM(m.FirstName_English)) + ' ' +
-                            LTRIM(RTRIM(m.FatherName_English)) + ' ' +
-                            LTRIM(RTRIM(m.Surname_English)),
-                            'NAME NOT FOUND'
-                        ) AS Candidate_Name
-                    FROM physical_standard_test pst
-                    LEFT JOIN Master m
-                        ON LTRIM(RTRIM(pst.application_number)) = LTRIM(RTRIM(m.ApplicationNo))
-                    WHERE pst.Stage = 1002
-                      AND UPPER(LTRIM(RTRIM(pst.pst_status))) LIKE 'PASS%'"
-            );
+            AddSheetFromQuery(package, "Selected Candidates",
+                "SELECT pst.application_number, pst.height_cm, pst.chest_cm, pst.weight_kg, pst.pst_status, COALESCE(LTRIM(RTRIM(m.FirstName_English))+' '+LTRIM(RTRIM(m.FatherName_English))+' '+LTRIM(RTRIM(m.Surname_English)),'NAME NOT FOUND') AS Candidate_Name FROM physical_standard_test pst LEFT JOIN Master m ON LTRIM(RTRIM(pst.application_number))=LTRIM(RTRIM(m.ApplicationNo)) WHERE pst.Stage=1002 AND UPPER(LTRIM(RTRIM(pst.pst_status))) LIKE 'PASS%'");
 
-            AddSheetFromQuery(
-                package,
-                "Rejected Candidates",
-                @"SELECT applicationno, username,
-          CONCAT(FirstName_English,' ',FatherName_English,' ',Surname_English) AS FullName,
-          MotherName_English, Gender, DOB, ApplicationDate
-          FROM master WHERE Stage = 1004"
-            );
+            AddSheetFromQuery(package, "Rejected Candidates",
+                "SELECT applicationno, username, CONCAT(FirstName_English,' ',FatherName_English,' ',Surname_English) AS FullName, MotherName_English, Gender, DOB, ApplicationDate FROM master WHERE Stage=1004");
 
-            AddSheetFromQuery(
-                package,
-                "Verified Biometrics",
-                @"SELECT UserId, Template, stage, application_no
-          FROM Fingerprints WHERE stage = 1002"
-            );
+            AddSheetFromQuery(package, "Verified Biometrics",
+                "SELECT UserId, Template, stage, application_no FROM Fingerprints WHERE stage=1002");
 
-            AddSheetFromQuery(
-                package,
-                "Unverified Biometrics",
-                @"SELECT UserId, Template, stage, application_no
-          FROM Fingerprints WHERE stage = 1004"
-            );
+            AddSheetFromQuery(package, "Unverified Biometrics",
+                "SELECT UserId, Template, stage, application_no FROM Fingerprints WHERE stage=1004");
 
-            AddSheetFromQuery(
-                package,
-                "PET Event Wise",
-                @"SELECT * FROM dbo.physical_standard_test"
-            );
+            AddSheetFromQuery(package, "PET Final Constable",
+                "SELECT * FROM dbo.pet_candidate_score WHERE chest_no LIKE '%ch%' AND (Stage<>1004 OR Stage IS NULL)");
 
-            AddSheetFromQuery(
-                package,
-                "All Passed Candidates",
-                @"
-                    SELECT
-                        pst.application_number,
-                        pst.height_cm,
-                        pst.chest_cm,
-                        pst.weight_kg,
-                        pst.pst_status,
-                        COALESCE(
-                            LTRIM(RTRIM(m.FirstName_English)) + ' ' +
-                            LTRIM(RTRIM(m.FatherName_English)) + ' ' +
-                            LTRIM(RTRIM(m.Surname_English)),
-                            'NAME NOT FOUND'
-                        ) AS Candidate_Name
-                    FROM physical_standard_test pst
-                    LEFT JOIN Master m
-                        ON LTRIM(RTRIM(pst.application_number)) = LTRIM(RTRIM(m.ApplicationNo))
-                    WHERE pst.Stage = 1002
-                      AND UPPER(LTRIM(RTRIM(pst.pst_status))) LIKE 'PASS%'"
-
-            );
-
-            AddSheetFromQuery(
-                package,
-                "All Failed Candidates",
-                @"
-                    SELECT
-                        pst.application_number,
-                        pst.height_cm,
-                        pst.chest_cm,
-                        pst.weight_kg,
-                        pst.pst_status,
-                        COALESCE(
-                            LTRIM(RTRIM(m.FirstName_English)) + ' ' +
-                            LTRIM(RTRIM(m.FatherName_English)) + ' ' +
-                            LTRIM(RTRIM(m.Surname_English)),
-                            'NAME NOT FOUND'
-                        ) AS Candidate_Name
-                    FROM physical_standard_test pst
-                    LEFT JOIN Master m
-                        ON LTRIM(RTRIM(pst.application_number)) = LTRIM(RTRIM(m.ApplicationNo))
-                    WHERE pst.Stage = 1002
-                      AND UPPER(LTRIM(RTRIM(pst.pst_status))) LIKE 'FAIL%'"
-
-            );
-
-
-            AddSheetFromQuery(
-                package,
-                "PET Final Constable",
-                @"
-            SELECT 
-    pet_id, 
-    application_no, 
-    chest_no, 
-    candidate_category, 
-    event_name, 
-    unit_type, 
-    start_time, 
-    end_time, 
-    time_taken_sec, 
-    distance_achieved_m, 
-    shot_put_weight_kg, 
-    attempt_no, 
-    is_best_attempt, 
-    marks_awarded, 
-    total_event_marks, 
-    remarks, 
-    recorded_by, 
-    recorded_datetime, 
-    Stage
-FROM dbo.pet_candidate_score 
-WHERE chest_no LIKE '%ch%' 
-AND (Stage <> 1004 OR Stage IS NULL);"
-            );
-
-            AddSheetFromQuery(
-                package,
-                "PET Final Driver",
-                @"SELECT * FROM dbo.pet_candidate_score
-          WHERE chest_no LIKE '%DR%'
-          AND (Stage <> 1004 OR Stage IS NULL)"
-            );
+            AddSheetFromQuery(package, "PET Final Driver",
+                "SELECT * FROM dbo.pet_candidate_score WHERE chest_no LIKE '%DR%' AND (Stage<>1004 OR Stage IS NULL)");
 
             return File(
                 package.GetAsByteArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "Audit_Report.xlsx"
-            );
+                "Audit_Report.xlsx");
         }
 
+        // =========================
+        // AUDIT REPORT – PDF (FIXED)
+        // =========================
+        [HttpGet("audit-report-pdf")]
+        [Produces("application/pdf")]
+        public IActionResult DownloadAuditReportPdf()
+        {
+            using var stream = new MemoryStream();
+
+            PdfWriter writer = new PdfWriter(stream);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf,iText.Kernel.Geom.PageSize.A4.Rotate());
+            document.SetMargins(20, 20, 20, 20);
+
+            PdfFont boldFont = PdfFontFactory.CreateFont(StandardFonts.HELVETICA_BOLD);
+
+            document.Add(new Paragraph("AUDIT REPORT")
+                .SetTextAlignment(TextAlignment.CENTER)
+                .SetFontSize(18)
+                .SetFont(boldFont));
+
+            AddPdfTableFromQuery(document, "Total Registration",
+                "SELECT Username, ApplicationNo, CONCAT(FirstName_English,' ',FatherName_English,' ',Surname_English) AS FullName, MotherName_English, Gender, DOB, ApplicationDate FROM master");
+
+            AddPdfTableFromQuery(document, "Passed Candidates",
+                "SELECT pst_id,application_number,height_cm,chest_cm,weight_kg,pst_status,chest_no FROM physical_standard_test  WHERE pst_status LIKE 'PASS%'");
+
+            AddPdfTableFromQuery(document, "Failed Candidates",
+                "SELECT pst_id,application_number,height_cm,chest_cm,weight_kg,pst_status,chest_no FROM physical_standard_test WHERE pst_status LIKE 'FAIL%'");
+
+            AddPdfTableFromQuery(document, "Selected Candidates",
+                "SELECT pst.application_number, pst.height_cm, pst.chest_cm, pst.weight_kg, pst.pst_status, COALESCE(LTRIM(RTRIM(m.FirstName_English))+' '+LTRIM(RTRIM(m.FatherName_English))+' '+LTRIM(RTRIM(m.Surname_English)),'NAME NOT FOUND') AS Candidate_Name FROM physical_standard_test pst LEFT JOIN Master m ON LTRIM(RTRIM(pst.application_number))=LTRIM(RTRIM(m.ApplicationNo)) WHERE pst.Stage=1002 AND UPPER(LTRIM(RTRIM(pst.pst_status))) LIKE 'PASS%'");
+
+            AddPdfTableFromQuery(document, "Rejected Candidates",
+                "SELECT applicationno, username, CONCAT(FirstName_English,' ',FatherName_English,' ',Surname_English) AS FullName, MotherName_English, Gender, DOB, ApplicationDate FROM master WHERE Stage=1004");
+
+            AddPdfTableFromQuery(document, "Verified Biometrics",
+                "SELECT UserId, Template, stage, application_no FROM Fingerprints WHERE stage=1002");
+
+            AddPdfTableFromQuery(document, "Unverified Biometrics",
+                "SELECT UserId, Template, stage, application_no FROM Fingerprints WHERE stage=1004");
+
+            AddPdfTableFromQuery(document, "PET Event Wise Report",
+            "SELECT pet_id,application_no,chest_no,event_name,start_time,end_time,shot_put_weight_kg,attempt_no,total_event_marks,recorded_datetime FROM pet_candidate_score");
+
+            AddPdfTableFromQuery(document, "PET Final Constable",
+                "SELECT application_no,chest_no, event_name,start_time, end_time,total_event_marks FROM dbo.pet_candidate_score WHERE chest_no LIKE '%ch%' AND (Stage<>1004 OR Stage IS NULL)");
+
+            AddPdfTableFromQuery(document, "PET Final Driver",
+                "SELECT application_no,chest_no, event_name,start_time, end_time,total_event_marks FROM pet_candidate_score WHERE chest_no LIKE '%DR%' AND (Stage<>1004 OR Stage IS NULL)");
+
+            document.Close();
+
+            return File(stream.ToArray(), "application/pdf", "Audit_Report.pdf");
+        }
+
+// =========================
+// Final-Selection – PDF
+// =========================
+[HttpGet("final-selection-pdf")]
+public IActionResult FinalSelectionPdf()
+{
+    return GenerateSinglePdf(
+        "Overall Rank / Final Selection",
+        "SELECT * FROM pet_candidate_score",
+        "Final_Selection.pdf"
+    );
+}
 
     }
 }

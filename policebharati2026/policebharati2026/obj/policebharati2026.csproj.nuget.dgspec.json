@@ -65,6 +65,14 @@
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.9.0, )"
+            },
+            "itext7": {
+              "target": "Package",
+              "version": "[9.5.0, )"
+            },
+            "itext7.bouncy-castle-adapter": {
+              "target": "Package",
+              "version": "[9.5.0, )"
             }
           },
           "imports": [
