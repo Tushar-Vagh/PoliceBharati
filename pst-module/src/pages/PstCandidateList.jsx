@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/pst.css";
 
-const MASTER_API = "/api/Master";
+const MASTER_API = "http://localhost:5000/api/Master";
 const ITEMS_PER_PAGE = 5;
 
 export default function PstCandidateList() {

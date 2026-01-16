@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import "../styles/Registration.css";
 
-const API_BASE = "/api/Master";
+const API_BASE = "http://localhost:5000/api/Master";
 
 /* ================= HELPERS ================= */
 const yesNo = (v) =>
@@ -23,6 +23,19 @@ const passFail = (v) => (v === "Pass" || v === "Fail" ? v : "");
 
 /* ================= COMPONENT ================= */
 export default function Registration() {
+
+  // 🔹 Webcam states
+const videoRef = React.useRef(null);
+const canvasRef = React.useRef(null);
+
+const [devices, setDevices] = useState([]);
+const [selectedDeviceId, setSelectedDeviceId] = useState("");
+const [uploadingPhoto, setUploadingPhoto] = useState(false);
+const [photoStatus, setPhotoStatus] = useState("");
+const [showCamera, setShowCamera] = useState(false);
+const [cameraReady, setCameraReady] = useState(false);
+
+
   const ITEMS_PER_PAGE = 5;
   const navigate = useNavigate();
   const [applicationNumber, setApplicationNumber] = useState("");
@@ -69,6 +82,116 @@ const filtered = applicants.filter((a) => {
     loadApplicants();
   }, []);
   
+
+
+
+  useEffect(() => {
+  if (!showCamera) return;
+
+  async function loadDevices() {
+    await navigator.mediaDevices.getUserMedia({ video: true });
+    const all = await navigator.mediaDevices.enumerateDevices();
+    const cams = all.filter(d => d.kind === "videoinput");
+    setDevices(cams);
+    if (cams.length > 0) setSelectedDeviceId(cams[0].deviceId);
+  }
+  loadDevices();
+}, [showCamera]);
+
+useEffect(() => {
+  if (!selectedDeviceId) return;
+
+  async function startCamera() {
+    setCameraReady(false);
+
+    if (videoRef.current?.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { deviceId: { exact: selectedDeviceId } }
+    });
+
+    videoRef.current.srcObject = stream;
+
+    // ✅ THIS IS THE FIX
+    videoRef.current.onloadedmetadata = () => {
+      setCameraReady(true);
+    };
+  }
+
+  startCamera();
+}, [selectedDeviceId]);
+
+
+
+
+
+const capturePhoto = async () => {
+  if (!applicationNumber.trim()) {
+    alert("Application Number required");
+    return;
+  }
+
+  if (!cameraReady) {
+    alert("Camera initializing, please wait...");
+    return;
+  }
+
+  if (uploadingPhoto) return;
+
+  const video = videoRef.current;
+  const canvas = canvasRef.current;
+
+  if (!video || !canvas) {
+    alert("Camera not ready");
+    return;
+  }
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(video, 0, 0);
+
+  canvas.toBlob(async (blob) => {
+    if (!blob) {
+      alert("Failed to capture image");
+      return;
+    }
+
+    setUploadingPhoto(true);
+    setPhotoStatus("Uploading photo...");
+
+    const formData = new FormData();
+    formData.append("file", blob, "photo.png");
+    formData.append("applicationNo", applicationNumber);
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/photo/upload",
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText);
+      }
+
+      setPhotoStatus("✅ Photo stored successfully");
+      setShowCamera(false);
+    } catch (error) {
+      console.error("Upload error:", error);
+      setPhotoStatus("❌ Upload failed");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }, "image/png");
+};
+
 
   /* ================= MAPPER ================= */
   const mapBackendToForm = (d) => ({
@@ -292,9 +415,57 @@ const filtered = applicants.filter((a) => {
               />
             </div>
 
-            <button className="btn-primary" type="submit">
-              Proceed
-            </button>
+            {showCamera && (
+  <div style={{ marginTop: "20px" }}>
+<video
+  ref={videoRef}
+  autoPlay
+  playsInline
+  style={{
+    width: "45%",
+    margin: "0 auto",
+    display: "block"
+  }}
+/>
+
+    <select
+      value={selectedDeviceId}
+      onChange={e => setSelectedDeviceId(e.target.value)}
+      style={{ width: "100%", marginTop: "10px" }}
+    >
+      {devices.map((d, i) => (
+        <option key={d.deviceId} value={d.deviceId}>
+          {d.label || `Camera ${i + 1}`}
+        </option>
+      ))}
+    </select>
+
+<button
+  onClick={capturePhoto}
+  disabled={!cameraReady || uploadingPhoto}
+  className="btn-primary"
+>
+  {cameraReady ? "Capture Photo" : "Initializing Camera..."}
+</button>
+
+    <p style={{ marginTop: "10px" }}>{photoStatus}</p>
+  </div>
+)}
+
+
+         {!showCamera && (
+  <button
+    type="button"
+    className="btn-primary"
+    disabled={!applicationNumber.trim()}
+    onClick={() => setShowCamera(true)}
+  >
+    Capture Photo
+  </button>
+)}
+
+
+
           </form>
 
           {/* ================= TABLE BELOW (NO UI CHANGE) ================= */}
@@ -892,6 +1063,8 @@ const filtered = applicants.filter((a) => {
           )}
         </form>
       )}
+            <canvas ref={canvasRef} style={{ display: "none" }} />
+
     </div>
   );
 }

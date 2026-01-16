@@ -7,8 +7,8 @@ import AdmissionCard from "../components/AdmissionCard";
 import RejectionSlip from "../components/RejectionSlip";
 import Toast from "../components/Toast";
 
-const MASTER_API = "/api/Master";
-const PST_API = "/api/PhysicalStandard";
+const MASTER_API = "http://localhost:5000/api/Master";
+const PST_API = "http://localhost:5000/api/PhysicalStandard";
 
 const PstModule = () => {
   const [formData, setFormData] = useState({

@@ -1,11 +1,13 @@
 using OfficeOpenXml;
 using MasterApi.Models;
-using policebharati2026.DTOs;          // ✅ FIXED
+using policebharati2026.DTOs;
 using policebharati2026.Data;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace policebharati2026.Services
 {
@@ -29,6 +31,65 @@ namespace policebharati2026.Services
 
             using var package = new ExcelPackage(ms);
             var sheet = package.Workbook.Worksheets[0];
+
+            if (sheet.Dimension == null)
+                throw new Exception("Empty Excel file");
+
+            // ======================================================
+            // ✅ STEP 1: VALIDATE HEADERS (NO EXTRA COLUMNS ALLOWED)
+            // ======================================================
+
+            var allowedColumns = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Username","TokenNo","ApplicationNo","ApplicationDate","Place","ExamFee","Post","UnitName",
+                "FirstName_Marathi","FatherName_Marathi","Surname_Marathi","MotherName_Marathi",
+                "FirstName_English","FatherName_English","Surname_English","MotherName_English",
+                "Gender","DOB","Religion","Caste","SubCaste",
+                "Address1","Address2","Address3","Village1","Mukkam_Post","Taluka","District","State","PinCode",
+                "PermanantAddress1","PermanantAddress2","PermanantAddress3","PermanantVillage",
+                "PermanantMukkam_Post","PermanantTaluka","PermanantDistrict","PermanantState","PermanantPinCode",
+                "EmailID","MobileNo","ApplicationCategory","ParallelReservation",
+                "FemaleReservation","NonCreamelayer",
+                "Maharashtra_Domicile","MaharashtraDomicileCertNo","MaharashtraDomicileDate",
+                "Karnataka_Domicile","KarnatakaDomicileCertNo","KarnatakaDomicileDate",
+                "ExSoldier","ExServiceJoiningDate","ExServiceDependent","HomeGuard","Sportsperson","Parttime",
+                "ParentInPolice","PoliceRank","PoliceNatureOfEmployment","PoliceDetails",
+                "ANATH","AnathDate","AnathCertificateType",
+                "IsNCC","NCCCertificateNo","NCCDate",
+                "NaxaliteArea","SmallVehicle","Prakalpgrast","Bhukampgrast","WorkonContract",
+                "IsFarmerSuicide","FarmerSuicideReportNo","FarmerSuicideReportDate",
+                "CasteCertificateNo","CasteCertificateDate",
+                "SSCBoardName","SSCResult","SSCMarksObtained","SSCTotalMarks",
+                "HSCBoardName","HSCResult","HSCMarksObtained","HSCTotalMarks",
+                "SeventhBoardName","SeventhResult","SeventhMarksObtained","SeventhTotalMarks",
+                "DiplomaBoardName","DiplomaResult","DiplomaMarksObtained","DiplomaTotalMarks",
+                "MSCIT","GraduationDegree","PostGraduationDegree","OtherGraduationDegree","OtherPostGraduationDegree","CreatedDate","UpdatedDate"
+            };
+
+            var excelColumns = new List<string>();
+
+            for (int c = 1; c <= sheet.Dimension.End.Column; c++)
+            {
+                var header = sheet.Cells[1, c].Text?.Trim();
+                if (!string.IsNullOrEmpty(header))
+                    excelColumns.Add(header);
+            }
+
+            var invalidColumns = excelColumns
+                .Where(c => !allowedColumns.Contains(c))
+                .ToList();
+
+            if (invalidColumns.Any())
+            {
+                throw new Exception(
+                    "Invalid Excel format. Unknown columns: " +
+                    string.Join(", ", invalidColumns)
+                );
+            }
+
+            // ======================================================
+            // ✅ STEP 2: PROCESS ROWS (ONLY IF HEADER IS VALID)
+            // ======================================================
 
             for (int r = 2; r <= sheet.Dimension.End.Row; r++)
             {
@@ -179,25 +240,18 @@ namespace policebharati2026.Services
         }
 
         private string? S(ExcelWorksheet s, int r, int c) => s.Cells[r, c].Text?.Trim();
+
         private bool B(ExcelWorksheet s, int r, int c)
         {
             var text = s.Cells[r, c].Text?.Trim().ToLower();
-
             return text switch
             {
-                "yes" => true,
-                "y" => true,
-                "true" => true,
-                "1" => true,
-
-                "no" => false,
-                "n" => false,
-                "false" => false,
-                "0" => false,
-
-                _ => false // default if empty or invalid
+                "yes" or "y" or "true" or "1" => true,
+                "no" or "n" or "false" or "0" => false,
+                _ => false
             };
         }
+
         private DateTime D(ExcelWorksheet s, int r, int c)
         {
             var cell = s.Cells[r, c];
@@ -205,16 +259,15 @@ namespace policebharati2026.Services
             if (cell.Value == null)
                 return new DateTime(1900, 1, 1);
 
-            // Excel numeric date
             if (double.TryParse(cell.Value.ToString(), out double oa))
                 return DateTime.FromOADate(oa);
 
-            // String date
             if (DateTime.TryParse(cell.Value.ToString(), out var dt))
                 return dt;
 
             return new DateTime(1900, 1, 1);
         }
+
         private decimal Dec(ExcelWorksheet s, int r, int c)
         {
             var cell = s.Cells[r, c];
@@ -230,6 +283,5 @@ namespace policebharati2026.Services
 
             return 0;
         }
-
     }
 }

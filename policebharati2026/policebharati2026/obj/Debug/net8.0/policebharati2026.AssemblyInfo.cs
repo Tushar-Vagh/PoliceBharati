@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("policebharati2026")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0493843d42c4b21b828908b4f6ef2350845f3375")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b531d4113e2d5cd78fdd0de7a6fda9cd8ef67d9")]
 [assembly: System.Reflection.AssemblyProductAttribute("policebharati2026")]
 [assembly: System.Reflection.AssemblyTitleAttribute("policebharati2026")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -46,47 +46,47 @@ export default function Phase5Dropdown() {
     let fileName = "";
 
     if (type === "passed") {
-      url = "/api/reports/passed-candidates";
+      url = "http://localhost:5000/api/reports/passed-candidates";
       fileName = "All_Passed_Candidates.xlsx";
 
     } else if (type === "failed") {
-      url = "/api/reports/failed-candidates";
+      url = "http://localhost:5000/api/reports/failed-candidates";
       fileName = "All_Failed_Candidates.xlsx";
 
     } else if (type === "total-registration") {
-      url = "/api/reports/total-registration";
+      url = "http://localhost:5000/api/reports/total-registration";
       fileName = "Total_Registration.xlsx";
 
     } else if (type === "selected") {
-      url = "/api/reports/selected-candidates";
+      url = "http://localhost:5000/api/reports/selected-candidates";
       fileName = "Selected_Candidates_List.xlsx";
 
     } else if (type === "rejected") {
-      url = "/api/reports/rejected-candidates";
+      url = "http://localhost:5000/api/reports/rejected-candidates";
       fileName = "Rejected_Candidates_List.xlsx";
 
     } else if (type === "verified") {
-      url = "/api/reports/verified-candidates";
+      url = "http://localhost:5000/api/reports/verified-candidates";
       fileName = "Verified_Candidates_List.xlsx";
 
     } else if (type === "unverified") {
-      url = "/api/reports/unverified-candidates";
+      url = "http://localhost:5000/api/reports/unverified-candidates";
       fileName = "Unverified_Candidates_List.xlsx";
 
     } else if (type === "pet-event-wise") {
-      url = "/api/reports/pet-event-wise-report";
+      url = "http://localhost:5000/api/reports/pet-event-wise-report";
       fileName = "PET_Event_Wise_Report.xlsx";
 
     } else if (type === "PET_Final_Constable") {
-      url = "/api/reports/pet-final-constable";
+      url = "http://localhost:5000/api/reports/pet-final-constable";
       fileName = "PET_Final_Constable.xlsx";
 
     } else if (type === "pet-final-driver") {
-      url = "/api/reports/pet-final-driver";
+      url = "http://localhost:5000/api/reports/pet-final-driver";
       fileName = "PET_Final_Driver.xlsx";
 
     } else if (type === "audit-report") {
-      url = "/api/reports/audit-report";
+      url = "http://localhost:5000/api/reports/audit-report";
       fileName = "Audit_Report.xlsx";
 
     } else {
