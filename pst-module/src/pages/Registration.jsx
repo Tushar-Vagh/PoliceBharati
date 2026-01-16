@@ -23,18 +23,16 @@ const passFail = (v) => (v === "Pass" || v === "Fail" ? v : "");
 
 /* ================= COMPONENT ================= */
 export default function Registration() {
-
   // 🔹 Webcam states
-const videoRef = React.useRef(null);
-const canvasRef = React.useRef(null);
+  const videoRef = React.useRef(null);
+  const canvasRef = React.useRef(null);
 
-const [devices, setDevices] = useState([]);
-const [selectedDeviceId, setSelectedDeviceId] = useState("");
-const [uploadingPhoto, setUploadingPhoto] = useState(false);
-const [photoStatus, setPhotoStatus] = useState("");
-const [showCamera, setShowCamera] = useState(false);
-const [cameraReady, setCameraReady] = useState(false);
-
+  const [devices, setDevices] = useState([]);
+  const [selectedDeviceId, setSelectedDeviceId] = useState("");
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoStatus, setPhotoStatus] = useState("");
+  const [showCamera, setShowCamera] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
 
   const ITEMS_PER_PAGE = 5;
   const navigate = useNavigate();
@@ -43,28 +41,30 @@ const [cameraReady, setCameraReady] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [readOnlyMode, setReadOnlyMode] = useState(false);
-const [applicants, setApplicants] = useState([]);
-const [loadingList, setLoadingList] = useState(false);
-const [searchTerm, setSearchTerm] = useState("");
-const [currentPage, setCurrentPage] = useState(1);
+  const [applicants, setApplicants] = useState([]);
+  const [loadingList, setLoadingList] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const filtered = applicants.filter((a) => {
+    const search = searchTerm.toLowerCase();
 
-const filtered = applicants.filter((a) => {
-  const search = searchTerm.toLowerCase();
+    const appNo = (a.applicationNo || "").toLowerCase();
+    const engName = `${a.firstName_English || ""} ${
+      a.surname_English || ""
+    }`.toLowerCase();
+    const marName = `${a.firstName_Marathi || ""} ${
+      a.surname_Marathi || ""
+    }`.toLowerCase();
 
-  const appNo = (a.applicationNo || "").toLowerCase();
-  const engName = `${a.firstName_English || ""} ${a.surname_English || ""}`.toLowerCase();
-  const marName = `${a.firstName_Marathi || ""} ${a.surname_Marathi || ""}`.toLowerCase();
+    return (
+      appNo.includes(search) ||
+      engName.includes(search) ||
+      marName.includes(search)
+    );
+  });
 
-  return (
-    appNo.includes(search) ||
-    engName.includes(search) ||
-    marName.includes(search)
-  );
-});
-
-
- /* ================= LOAD MASTER LIST ================= */
+  /* ================= LOAD MASTER LIST ================= */
   useEffect(() => {
     const loadApplicants = async () => {
       try {
@@ -81,117 +81,111 @@ const filtered = applicants.filter((a) => {
     };
     loadApplicants();
   }, []);
-  
-
-
 
   useEffect(() => {
-  if (!showCamera) return;
+    if (!showCamera) return;
 
-  async function loadDevices() {
-    await navigator.mediaDevices.getUserMedia({ video: true });
-    const all = await navigator.mediaDevices.enumerateDevices();
-    const cams = all.filter(d => d.kind === "videoinput");
-    setDevices(cams);
-    if (cams.length > 0) setSelectedDeviceId(cams[0].deviceId);
-  }
-  loadDevices();
-}, [showCamera]);
+    async function loadDevices() {
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      const all = await navigator.mediaDevices.enumerateDevices();
+      const cams = all.filter((d) => d.kind === "videoinput");
+      setDevices(cams);
+      if (cams.length > 0) setSelectedDeviceId(cams[0].deviceId);
+    }
+    loadDevices();
+  }, [showCamera]);
 
-useEffect(() => {
-  if (!selectedDeviceId) return;
+  useEffect(() => {
+    if (!selectedDeviceId) return;
 
-  async function startCamera() {
-    setCameraReady(false);
+    async function startCamera() {
+      setCameraReady(false);
 
-    if (videoRef.current?.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+      if (videoRef.current?.srcObject) {
+        videoRef.current.srcObject.getTracks().forEach((t) => t.stop());
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { deviceId: { exact: selectedDeviceId } },
+      });
+
+      videoRef.current.srcObject = stream;
+
+      // ✅ THIS IS THE FIX
+      videoRef.current.onloadedmetadata = () => {
+        setCameraReady(true);
+      };
     }
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { deviceId: { exact: selectedDeviceId } }
-    });
+    startCamera();
+  }, [selectedDeviceId]);
 
-    videoRef.current.srcObject = stream;
-
-    // ✅ THIS IS THE FIX
-    videoRef.current.onloadedmetadata = () => {
-      setCameraReady(true);
-    };
-  }
-
-  startCamera();
-}, [selectedDeviceId]);
-
-
-
-
-
-const capturePhoto = async () => {
-  if (!applicationNumber.trim()) {
-    alert("Application Number required");
-    return;
-  }
-
-  if (!cameraReady) {
-    alert("Camera initializing, please wait...");
-    return;
-  }
-
-  if (uploadingPhoto) return;
-
-  const video = videoRef.current;
-  const canvas = canvasRef.current;
-
-  if (!video || !canvas) {
-    alert("Camera not ready");
-    return;
-  }
-
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0);
-
-  canvas.toBlob(async (blob) => {
-    if (!blob) {
-      alert("Failed to capture image");
+  const capturePhoto = async () => {
+    if (!applicationNumber.trim()) {
+      alert("Application Number required");
       return;
     }
 
-    setUploadingPhoto(true);
-    setPhotoStatus("Uploading photo...");
+    if (!cameraReady) {
+      alert("Camera initializing, please wait...");
+      return;
+    }
 
-    const formData = new FormData();
-    formData.append("file", blob, "photo.png");
-    formData.append("applicationNo", applicationNumber);
+    if (uploadingPhoto) return;
 
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/photo/upload",
-        {
-          method: "POST",
-          body: formData
-        }
-      );
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
 
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(errText);
+    if (!video || !canvas) {
+      alert("Camera not ready");
+      return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) {
+        alert("Failed to capture image");
+        return;
       }
 
-      setPhotoStatus("✅ Photo stored successfully");
-      setShowCamera(false);
-    } catch (error) {
-      console.error("Upload error:", error);
-      setPhotoStatus("❌ Upload failed");
-    } finally {
-      setUploadingPhoto(false);
-    }
-  }, "image/png");
-};
+      setUploadingPhoto(true);
+      setPhotoStatus("Uploading photo...");
 
+      const formData = new FormData();
+      formData.append("file", blob, "photo.png");
+      formData.append("applicationNo", applicationNumber);
+
+      try {
+        const response = await fetch("http://localhost:5000/api/photo/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(errText);
+        }
+
+        setPhotoStatus("✅ Photo stored successfully");
+        setShowCamera(false);
+
+        // ✅ show dialog box
+        setTimeout(() => {
+          window.alert("Photo uploaded successfully");
+        }, 100);
+      } catch (error) {
+        console.error("Upload error:", error);
+        setPhotoStatus("❌ Upload failed");
+      } finally {
+        setUploadingPhoto(false);
+      }
+    }, "image/png");
+  };
 
   /* ================= MAPPER ================= */
   const mapBackendToForm = (d) => ({
@@ -335,13 +329,13 @@ const capturePhoto = async () => {
   const prevStep = () => setCurrentStep((s) => s - 1);
 
   const handleFinalSubmit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  console.log("Final Registration Data:", formData);
+    console.log("Final Registration Data:", formData);
 
-  // 🔁 redirect to dashboard
-  navigate("/");
-};
+    // 🔁 redirect to dashboard
+    navigate("/");
+  };
 
   /* ================= VIEW BUTTON (TABLE) ================= */
   const handleView = async (appNo) => {
@@ -354,7 +348,6 @@ const capturePhoto = async () => {
     setReadOnlyMode(true);
     setCurrentStep(1);
   };
-
 
   const Input = ({ name, label, type = "text" }) => (
     <div className="field">
@@ -392,16 +385,15 @@ const capturePhoto = async () => {
     <Select name={name} label={label} options={["YES", "NO"]} />
   );
 
-    const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-  const paginatedApplicants  = filtered.slice(
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginatedApplicants = filtered.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
 
-
   /* ================= UI ================= */
   return (
-        <div className="registration-form">
+    <div className="registration-form">
       {!proceed ? (
         <>
           {/* ================= APPLICATION NUMBER FORM ================= */}
@@ -416,140 +408,137 @@ const capturePhoto = async () => {
             </div>
 
             {showCamera && (
-  <div style={{ marginTop: "20px" }}>
-<video
-  ref={videoRef}
-  autoPlay
-  playsInline
-  style={{
-    width: "45%",
-    margin: "0 auto",
-    display: "block"
-  }}
-/>
+              <div style={{ marginTop: "20px" }}>
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  style={{
+                    width: "45%",
+                    margin: "0 auto",
+                    display: "block",
+                  }}
+                />
 
-    <select
-      value={selectedDeviceId}
-      onChange={e => setSelectedDeviceId(e.target.value)}
-      style={{ width: "100%", marginTop: "10px" }}
-    >
-      {devices.map((d, i) => (
-        <option key={d.deviceId} value={d.deviceId}>
-          {d.label || `Camera ${i + 1}`}
-        </option>
-      ))}
-    </select>
+                <select
+                  value={selectedDeviceId}
+                  onChange={(e) => setSelectedDeviceId(e.target.value)}
+                  style={{ width: "100%", marginTop: "10px" }}
+                >
+                  {devices.map((d, i) => (
+                    <option key={d.deviceId} value={d.deviceId}>
+                      {d.label || `Camera ${i + 1}`}
+                    </option>
+                  ))}
+                </select>
 
-<button
-  onClick={capturePhoto}
-  disabled={!cameraReady || uploadingPhoto}
-  className="btn-primary"
->
-  {cameraReady ? "Capture Photo" : "Initializing Camera..."}
-</button>
+                <button
+                  onClick={capturePhoto}
+                  disabled={!cameraReady || uploadingPhoto}
+                  className="btn-primary"
+                >
+                  {cameraReady ? "Capture Photo" : "Initializing Camera..."}
+                </button>
 
-    <p style={{ marginTop: "10px" }}>{photoStatus}</p>
-  </div>
-)}
+                <p style={{ marginTop: "10px" }}>{photoStatus}</p>
+              </div>
+            )}
 
-
-         {!showCamera && (
-  <button
-    type="button"
-    className="btn-primary"
-    disabled={!applicationNumber.trim()}
-    onClick={() => setShowCamera(true)}
-  >
-    Capture Photo
-  </button>
-)}
-
-
-
+            {!showCamera && (
+              <button
+                type="button"
+                className="btn-primary"
+                disabled={!applicationNumber.trim()}
+                onClick={() => setShowCamera(true)}
+              >
+                Capture Photo
+              </button>
+            )}
           </form>
 
           {/* ================= TABLE BELOW (NO UI CHANGE) ================= */}
-       <div className="applicant-table-wrapper">
-  <h3 style={{ marginTop: "30px" }}>Registered Applicants</h3>
+          <div className="applicant-table-wrapper">
+            <h3 style={{ marginTop: "30px" }}>Registered Applicants</h3>
 
-  <div className="table-search">
-    <input
-      type="text"
-      placeholder="Search by Application No or Name"
-      value={searchTerm}
-      onChange={(e) => {
-        setSearchTerm(e.target.value);
-        setCurrentPage(1); // reset page on search
-      }}
-    />
-  </div>
+            <div className="table-search">
+              <input
+                type="text"
+                placeholder="Search by Application No or Name"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1); // reset page on search
+                }}
+              />
+            </div>
 
-  {loadingList ? (
-    <p>Loading...</p>
-  ) : paginatedApplicants.length === 0 ? (
-    <div className="no-record-box">
-      ❌ No records found
-    </div>
-  ) : (
-    <>
-      <table className="applicant-table">
-        <thead>
-          <tr>
-            <th>Application No</th>
-            <th>Name (English)</th>
-            <th>Name (Marathi)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedApplicants.map((a) => (
-            <tr key={a.applicationNo}>
-              <td>{a.applicationNo}</td>
-              <td>{a.firstName_English} {a.surname_English}</td>
-              <td>{a.firstName_Marathi} {a.surname_Marathi}</td>
-              <td>
-                <button
-                  type="button"
-                  className="btn-primary"
-                  onClick={() => handleView(a.applicationNo)}
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            {loadingList ? (
+              <p>Loading...</p>
+            ) : paginatedApplicants.length === 0 ? (
+              <div className="no-record-box">❌ No records found</div>
+            ) : (
+              <>
+                <table className="applicant-table">
+                  <thead>
+                    <tr>
+                      <th>Application No</th>
+                      <th>Name (English)</th>
+                      <th>Name (Marathi)</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedApplicants.map((a) => (
+                      <tr key={a.applicationNo}>
+                        <td>{a.applicationNo}</td>
+                        <td>
+                          {a.firstName_English} {a.surname_English}
+                        </td>
+                        <td>
+                          {a.firstName_Marathi} {a.surname_Marathi}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn-primary"
+                            onClick={() => handleView(a.applicationNo)}
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-      {totalPages > 1 && (
-        <div className="pagination-controls">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(p => p - 1)}
-          >
-            Previous
-          </button>
+                {totalPages > 1 && (
+                  <div className="pagination-controls">
+                    <button
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage((p) => p - 1)}
+                    >
+                      Previous
+                    </button>
 
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
+                    <span>
+                      Page {currentPage} of {totalPages}
+                    </span>
 
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(p => p + 1)}
-          >
-            Next
-          </button>
-        </div>
-      )}
-    </>
-  )}
-</div>
-</>
+                    <button
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage((p) => p + 1)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </>
       ) : (
-
         /* ========== MAIN REGISTRATION FORM ========== */
-<form onSubmit={handleFinalSubmit}>
+        <form onSubmit={handleFinalSubmit}>
           {/* ================= STEP 1 ================= */}
           {currentStep === 1 && (
             <>
@@ -1057,14 +1046,12 @@ const capturePhoto = async () => {
                 <button type="submit" className="btn-primary">
                   SUBMIT
                 </button>
-                
               </div>
             </>
           )}
         </form>
       )}
-            <canvas ref={canvasRef} style={{ display: "none" }} />
-
+      <canvas ref={canvasRef} style={{ display: "none" }} />
     </div>
   );
 }
