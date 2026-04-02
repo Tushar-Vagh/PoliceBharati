@@ -1,38 +1,66 @@
-# Police Bharati 2026 – Recruitment Management System
+# 🚔 Police Bharati 2026 – Recruitment Management System
 
-Police Bharati 2026 is a full-stack web application designed to manage candidate registration, verification, and physical standard tests for police recruitment.
+A scalable, full-stack web application designed to digitize and streamline the **police recruitment process**, including candidate registration, verification, and Physical Standard Tests (PST).
 
-The project is deployed live at Beed, Ahilyanagar, Washim and kolhapur in Maharashtra.
-
-The system displays all registered candidates in a table format and allows officers to view complete candidate details using the Application Number without manual entry.
-
-Candidate data is fetched from a centralized Master database using REST APIs built with ASP.NET Core.
-
-The application includes a webcam-based photo capture feature where photos are captured only after entering a valid Application Number and are stored directly in the database.
-
-Physical Standard Tests (PST) such as height, weight, and chest measurements are verified independently by different officers.
-
-A bulk Excel upload module is provided for uploading large volumes of candidate data.
-
-The frontend is built using React (Vite) with a multi-step read-only verification form.
-
-The backend is developed using ASP.NET Core Web API with SQL Server.
-
-Swagger is used for API testing and validation.
+📍 **Live Deployment Locations:**  
+Beed • Ahilyanagar • Washim • Kolhapur (Maharashtra, India)
 
 ---
 
-## Installation & Setup
+## 📌 Overview
 
-### Backend (ASP.NET Core)
-```bash
-cd policebharati2026
-dotnet restore
-dotnet run
-```
+Police Bharati 2026 eliminates manual inefficiencies in recruitment by providing a centralized, automated system for managing candidate data and verification workflows.
 
-### Frontend (React + Vite)
-```
-cd frontend
-npm install
-npm run dev
+The platform ensures **accuracy, speed, and transparency** across multiple recruitment centers.
+
+---
+
+## ✨ Key Features
+
+### 🔹 Candidate Management
+- Displays all registered candidates in a **dynamic table view**
+- Fetches candidate data using **Application Number (no manual entry required)**
+- Integrated with a **centralized Master Database via REST APIs**
+
+### 🔹 Verification System
+- Multi-step **read-only verification form**
+- Independent verification by multiple officers
+- Structured validation workflow for accuracy
+
+### 🔹 Physical Standard Test (PST)
+- Records:
+  - Height
+  - Weight
+  - Chest measurements
+- Separate verification authority for each parameter
+
+### 🔹 Webcam Photo Capture
+- Captures candidate photo using webcam
+- Enabled only after valid Application Number entry
+- Stores images directly in database for secure tracking
+
+### 🔹 Bulk Data Upload
+- Upload large datasets via **Excel**
+- Efficient handling of mass candidate entries
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- ⚛️ React (Vite)
+- 🎨 Modern UI with structured multi-step forms
+- 🔄 REST API Integration
+
+### Backend
+- 🧠 ASP.NET Core Web API
+- 🧾 SQL Server Database
+- 📡 RESTful Architecture
+
+### Tools & Utilities
+- 🧪 Swagger (API Testing & Validation)
+- 📊 Excel Integration for bulk uploads
+
+---
+
+## 🏗️ System Architecture
