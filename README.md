@@ -2,6 +2,8 @@
 
 Police Bharati 2026 is a full-stack web application designed to manage candidate registration, verification, and physical standard tests for police recruitment.
 
+The project is deployed live at Beed, Ahilyanagar, Washim and kolhapur in Maharashtra.
+
 The system displays all registered candidates in a table format and allows officers to view complete candidate details using the Application Number without manual entry.
 
 Candidate data is fetched from a centralized Master database using REST APIs built with ASP.NET Core.
